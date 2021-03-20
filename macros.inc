@@ -37,7 +37,7 @@ section .bss
     mov [rcx], bl
 
     mov [num_pos], rcx
-printALLoop:
+%%printALLoop:
     mov rdx, 0
     mov rbx, 10
     div rbx
@@ -51,8 +51,8 @@ printALLoop:
 
     pop rax
     cmp rax, 0
-    jne printALLoop
-printALLoop2:
+    jne %%printALLoop
+%%printALLoop2:
     mov rcx, [num_pos]
 
     mov rax, 1
@@ -66,7 +66,7 @@ printALLoop2:
     mov [num_pos], rcx
 
     cmp rcx, num
-    jge printALLoop2
+    jge %%printALLoop2
 
 %endmacro
 
