@@ -18,6 +18,9 @@ section .text
 ; - [out] [char]: read char
 ; - [modifies] rax, rdi, rsi, rdx,
 _scanf:
+	mov rax, 0
+	mov [char], rax
+
 	mov rax, SYS_READ
 	mov rdi, STDIN
 	mov rsi, char
@@ -30,6 +33,7 @@ _scanf:
 	mov rdi, 0
 	mov rax, SYS_EXIT
 	syscall
+
 end_scanf:
 	ret
 
@@ -480,6 +484,5 @@ while_true:
 	call _print_utf_char	; _print_utf_char(r12)
 
 	jmp while_true			; jump to while_true
-	print endl
 
 	exit
