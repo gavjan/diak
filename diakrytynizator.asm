@@ -483,7 +483,3 @@ while_true:
 	print endl
 
 	exit
-
-
-
-
