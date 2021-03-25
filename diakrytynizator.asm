@@ -65,23 +65,32 @@ print_args_loop:
 
 
 	mov rbx, [mult]
-	mul rbx
+	mul rbx					; rax *= mult
+
+
 	mov rbx, 1113984
 	div rbx
-	mov rax, rdx			; rax = (rax*mult)%1113984
+	mov rax, rdx 			; rax %= 1113984
 
 	mov rcx, [sum]
-	add rcx, rax
+	add rcx, rax			; sum += rax
+
 	mov rax, rcx
 	mov rbx, 1113984
 	div rbx
-	mov [sum], rdx 			; sum = (sum + rax)%1113984
+	mov rax, rdx
+	mov [sum], rcx			; sum %= 1113984
+
+
+
 
 	mov rax, [mult]
-	mul r12
+	mul r12					; mult*=r12 // r12 is x
+
 	mov rbx, 1113984
     div rbx
-	mov [mult], rdx			; mult = (mult*r12)%1113984 // r12 is x
+    mov rax, rdx
+	mov [mult], rax			; mult %= 1113984
 
     inc r10
 
@@ -104,10 +113,6 @@ convert_args_loop:
 	mov rax, [rbx + r10*8]	; rax = arg_arr + 8*r10
 
 	call _convert_to_int	; rax = convert_int(rax)
-
-	mov rbx, 1113984
-	div rbx
-	mov rax, rdx			; rax %= 1113984
 
 	mov rbx, [arg_arr]
 	mov [rbx + r10*8], rax 	; rbx = arg_arr + 8*r10
