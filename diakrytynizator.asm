@@ -1,5 +1,11 @@
 %include "macros.inc"
 
+;SYS_READ    equ 0
+;SYS_WRITE   equ 1
+;SYS_EXIT    equ 60
+;STDIN   	equ 0
+;STDOUT  	equ 1
+
 section .bss
 	argc resb 8
 	arg_arr resb 8
@@ -346,21 +352,45 @@ end_print_utf_char:
 ; - Convert string to a number
 ; - [in]  rax: pointer to string
 ; - [out] rax: converted number
-; - [modifies]: rbx, rdx, r8
+; - [modifies]: rbx, rdx, rcx, r8
 _convert_to_int:
 	mov r8, rax				; r8 = rax
 	xor rax, rax			; rax = 0
 	xor rbx, rbx			; rbx = 0
+	xor r9, r9				; r9 = 0
 
 start_int_loop:
 	mov bl, [r8]
 	cmp bl, 0
 	je end_int_loop			; jump if bl == '\0'
 
+	inc r9					; r9++
+
+	cmp bl, 48
+	jb _err_exit
+	cmp bl, 57
+	ja _err_exit			; err if not numeric
+
+	sub bl, 48				; bl -= '0'
+
+	cmp r9, 20
+	jb under_64_bit
+	ja _err_exit			; err if larger than uint64_t max
+
+	mov rcx, 1844674407370955161
+	cmp rax, rcx
+	jb under_64_bit
+	ja _err_exit			; err if larger than uint64_t max
+
+	cmp bl, 5
+	ja _err_exit			; err if larger than uint64_t max
+
+under_64_bit:
+
+
 	mov rdx, 10
 	mul rdx
-	sub bl, 48
-	add rax, rbx			; rax = rax*10 + (bl - '0')
+	add rax, rbx			; rax = rax*10 + bl
 
 	inc r8					; r8++
 	jmp start_int_loop		; jump start_int_loop
@@ -466,8 +496,13 @@ _start:
 	pop rax					; pop rax
 	dec rax					; rax--
 	mov [argc], rax			; argc = rax // we don't need the first argument
-	;	TODO check if arguments are at least 1
 
+	cmp rax, 1
+	jae arguments_ok		; jump if rax >= 1
+
+	call _err_exit			; err if arguments are less than 1
+
+arguments_ok:
 	pop rax					; remove first argument
 
 	mov [arg_arr], rsp		; arg_arr = rsp
@@ -484,5 +519,3 @@ while_true:
 	call _print_utf_char	; _print_utf_char(r12)
 
 	jmp while_true			; jump to while_true
-
-	exit
