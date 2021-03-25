@@ -24,6 +24,13 @@ _scanf:
 	mov rdx, 1
 	syscall
 	mov bl, [char]
+	cmp bl, 0
+	jne end_scanf
+
+	mov rdi, 0
+	mov rax, SYS_EXIT
+	syscall
+end_scanf:
 	ret
 
 ; - Print continuation byte
@@ -455,6 +462,7 @@ _start:
 	pop rax					; pop rax
 	dec rax					; rax--
 	mov [argc], rax			; argc = rax // we don't need the first argument
+	;	TODO check if arguments are at least 1
 
 	pop rax					; remove first argument
 
@@ -462,6 +470,7 @@ _start:
 
 	call _convert_args		; convert input arguments
 
+while_true:
 	call _next_utf_char		; rax = _next_utf_char()
 
 	mov r12, rax
@@ -470,6 +479,7 @@ _start:
 	mov rax, r12
 	call _print_utf_char	; _print_utf_char(r12)
 
+	jmp while_true			; jump to while_true
 	print endl
 
 	exit
