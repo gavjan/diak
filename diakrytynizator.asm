@@ -37,7 +37,7 @@ _print_cont_byte:
 	mov rbx, 63
 	and rax, rbx			; leave only first 6 bits
 
-    add rax, 128			; add continuation bits
+	add rax, 128			; add continuation bits
 
 	call _print_char		; print byte
 
@@ -236,11 +236,6 @@ _print_utf_char:
 	xor rsi, rsi 			; rsi = 0
 	xor rdx, rdx 			; rdx = 0
 
-
-
-
-
-
 ;-------------------One Byte---------------------------
 	cmp r8, 128
 	jae two_byte			; jump if requires more than a byte
@@ -289,10 +284,10 @@ three_byte:
 	call _print_char		; print first byte
 
 
-    mov rbx, 64
-    call _print_cont_byte	; second byte
+	mov rbx, 64
+	call _print_cont_byte	; second byte
 
-    mov rax, r8
+	mov rax, r8
 	mov rbx, 63
 	and rax, rbx			; leave only first 6 bits
 
@@ -323,7 +318,7 @@ four_byte:
 	call _print_cont_byte	; third byte
 
 
-    mov rax, r8
+	mov rax, r8
 	mov rbx, 63
 	and rax, rbx			; leave only first 6 bits
 
@@ -418,11 +413,11 @@ print_args_loop:
 	mul r12					; mult*=r12 // r12 is x
 
 	mov rbx, 1113984
-    div rbx
-    mov rax, rdx
+	div rbx
+	mov rax, rdx
 	mov [mult], rax			; mult %= 1113984
 
-    inc r10
+	inc r10
 
 	mov rbx, [argc]
 	cmp r10, rbx
@@ -475,7 +470,7 @@ _start:
 	mov rax, r12
 	call _print_utf_char	; _print_utf_char(r12)
 
-    print endl
+	print endl
 
 	exit
 
