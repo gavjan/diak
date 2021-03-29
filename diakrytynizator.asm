@@ -103,7 +103,7 @@ _next_utf_char:
 	xor r9, r9				; r9 = 0
 
 ;-------------------First Byte-------------------------
-	call _scanf
+	call _scanf				; bl = _scanf()
 
 	cmp bl, 128
 	jae check_2_byte		; jump if first bit is 1
@@ -135,7 +135,7 @@ check_2_byte:
 
 	mov r9, rax				; r9 = rax
 
-	call _scanf
+	call _scanf				; bl = _scanf()
 
 	call _assert_cont_byte	; assert_cont_byte()
 
@@ -166,7 +166,7 @@ check_3_byte:
 
 	mov r9, rax				; r9 = rax
 
-	call _scanf
+	call _scanf				; bl = _scanf()
 
 	call _assert_cont_byte	; assert_cont_byte()
 
@@ -176,7 +176,7 @@ check_3_byte:
 
 	add r9, rax				; add the 2nd byte's code
 
-	call _scanf
+	call _scanf				; bl = _scanf()
 
 	call _assert_cont_byte	; assert_cont_byte()
 
@@ -207,7 +207,7 @@ check_4_byte:
 
 	mov r9, rax				; r9 = rax
 
-	call _scanf
+	call _scanf				; bl = _scanf()
 
 	call _assert_cont_byte	; assert_cont_byte()
 
@@ -217,7 +217,7 @@ check_4_byte:
 
 	add r9, rax				; add the 2nd byte's code
 
-	call _scanf
+	call _scanf				; bl = _scanf()
 
 	call _assert_cont_byte	; assert_cont_byte()
 
@@ -227,7 +227,7 @@ check_4_byte:
 
 	add r9, rax				; add the third byte's code
 
-	call _scanf
+	call _scanf				; bl = _scanf()
 
 	call _assert_cont_byte	; assert_cont_byte()
 
