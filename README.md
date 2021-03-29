@@ -5,7 +5,7 @@
 Zaimplementuj w asemblerze x86_64 program, który czyta ze standardowego wejścia tekst, modyfikuje go w niżej
 opisany sposób, a wynik wypisuje na standardowe wyjście. Do kodowania tekstu używamy UTF-8, patrz
 https://pl.wikipedia.org/wiki/UTF-8. Program nie zmienia znaków o wartościach unicode z przedziału od `0x00` do `0x7F`.
-Natomiast każdy znak o wartości unicode większej od `0x7F` przekształca na znak, którego wartość unicode wyznacza się
+Natomiast każdy znak o wartości unicode większej od `0x7F` przekształca na znak, którego wartość unicode wաŁyznacza się
 za pomocą niżej opisanego wielomianu.
 
 # Wielomian diakrytynizujący
@@ -16,13 +16,13 @@ Wielomian diakrytynizujący definiuje się przez parametry wywołania diakrytyni
 ```
 jako:
 ```
-w(x) = an * x^n + ... + a2 * x^2 + a1 * x + a
+w(x) = an * x^n + ... + a2 * x^2 + a1 * x + a0
 ```
 
 Współczynniki wielomianu są nieujemnymi liczbami całkowitymi podawanymi przy podstawie dziesięć. Musi wystąpić
 przynajmniej parametr `a0`.
 
-Obliczanie wartości wielomianu wykonuje się modulo 0x10FF80. W tekście znak o wartości unicode `x` zastępuje się
+Obliczanie wartości wielomianu wykonuje się modulo `0x10FF80`. W tekście znak o wartości unicode `x` zastępuje się
 znakiem o wartości unicode `w(x - 0x80) + 0x80`.
 
 # Zakończenie programu i obsługa błędów
