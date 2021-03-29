@@ -22,5 +22,6 @@
 
 # Project specific
 diakrytynizator
-.ideatmp.sh
+.idea
+tmp.sh
 .idea/*
