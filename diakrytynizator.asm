@@ -435,25 +435,27 @@ print_args_loop:
 
 
 	mov rbx, 1113984
+	mov rdx, 0
 	div rbx
 	mov rax, rdx 			; rax %= 1113984
 
 	mov rcx, [sum]
 	add rcx, rax			; sum += rax
 
+
+
 	mov rax, rcx
 	mov rbx, 1113984
+	mov rdx, 0
 	div rbx
-	mov rax, rdx
-	mov [sum], rcx			; sum %= 1113984
-
-
+	mov [sum], rdx			; sum %= 1113984
 
 
 	mov rax, [mult]
 	mul r12					; mult*=r12 // r12 is x
 
 	mov rbx, 1113984
+	mov rdx, 0
 	div rbx
 	mov rax, rdx
 	mov [mult], rax			; mult %= 1113984
