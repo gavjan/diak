@@ -143,6 +143,10 @@ check_2_byte:
 
 	add r9, rbx				; add the 2nd byte's code
 
+	cmp r9, 128
+	mov rax, 6
+	jb	_err_exit			; err if r9 < 128
+
 	jmp end_next_utf_char	; jump to end
 ;-------------------Second Byte------------------------
 
@@ -184,6 +188,10 @@ check_3_byte:
 	call _assert_cont_byte	; assert_cont_byte()
 
 	add r9, rbx				; add the 3rd byte's code
+
+	cmp r9, 2048
+	mov rax, 7
+	jb	_err_exit			; err if r9 < 2048
 
 	jmp end_next_utf_char	; jump to end
 
@@ -236,6 +244,10 @@ check_4_byte:
 	call _assert_cont_byte	; assert_cont_byte()
 
 	add r9, rbx				; add the 4th byte's code
+
+	cmp r9, 65536
+	mov rax, 8
+	jb	_err_exit			; err if r9 < 65536
 
 
 ;-------------------Forth Byte-------------------------
