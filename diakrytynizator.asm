@@ -13,8 +13,6 @@ section .bss
 	sum resb 8
 	buff resb 2
 	char resb 1
-	padding resb 8
-	stack resb 8
 
 section .text
 	global _start
@@ -37,15 +35,6 @@ _scanf:
 	mov bl, [char]
 	cmp bl, 0
 	jne end_scanf
-
-	mov rax, [stack]
-
-	cmp rax, 0
-	je ok_exit
-
-	mov rax, 12
-	jmp _err_exit
-ok_exit:
 
 	mov rdi, 0
 	mov rax, SYS_EXIT
@@ -98,10 +87,6 @@ _assert_cont_byte:
 	not cl
 	and bl, cl				; clear continuation header bytes
 
-	mov rax, [stack]
-	dec rax
-	mov [stack], rax		; stack--
-
 	ret
 
 ; - Get next UTF character from a string
@@ -152,9 +137,6 @@ check_2_byte:
 
 	mov r9, rax				; r9 = rax
 
-	mov rax, 1
-	mov [stack], rax		; stack = 1
-
 	call _scanf				; bl = _scanf()
 
 	call _assert_cont_byte	; assert_cont_byte()
@@ -186,9 +168,6 @@ check_3_byte:
 	mul rcx					; shitft bits to 12 left
 
 	mov r9, rax				; r9 = rax
-
-	mov rax, 2
-    mov [stack], rax		; stack = 2
 
 	call _scanf				; bl = _scanf()
 
@@ -231,9 +210,6 @@ check_4_byte:
 	mul rcx					; shitft bits to 18 left
 
 	mov r9, rax				; r9 = rax
-
-	mov rax, 3
-	mov [stack], rax		; stack = 3
 
 	call _scanf				; bl = _scanf()
 
@@ -538,9 +514,6 @@ arguments_ok:
 	mov [arg_arr], rsp		; arg_arr = rsp
 
 	call _convert_args		; convert input arguments
-
-	mov rax, 0
-	mov [stack], rax
 
 while_true:
 	call _next_utf_char		; rax = _next_utf_char()
