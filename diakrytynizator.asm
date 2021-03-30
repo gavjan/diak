@@ -13,6 +13,8 @@ section .bss
 	sum resb 8
 	buff resb 2
 	char resb 1
+	padding resb 8
+	stack resb 8
 
 section .text
 	global _start
@@ -35,6 +37,15 @@ _scanf:
 	mov bl, [char]
 	cmp bl, 0
 	jne end_scanf
+
+	mov rax, [stack]
+
+	cmp rax, 0
+	je ok_exit
+
+	mov rax, 12
+	jmp _err_exit
+ok_exit:
 
 	mov rdi, 0
 	mov rax, SYS_EXIT
@@ -81,10 +92,15 @@ _assert_cont_byte:
 	mov cl, 128
 	and al, bl
 	cmp al, cl
+	mov rax, 2
 	jne _err_exit			; check if byte starts with 10
 
 	not cl
 	and bl, cl				; clear continuation header bytes
+
+	mov rax, [stack]
+	dec rax
+	mov [stack], rax		; stack--
 
 	ret
 
@@ -124,6 +140,7 @@ check_2_byte:
 	mov rax, 64
 	and al, bl
 	cmp al, 0
+	mov rax, 3
 	je _err_exit			; err if byte doesn't start with 110
 
 	mov rax, 63
@@ -134,6 +151,9 @@ check_2_byte:
 	mul rcx					; shitft bits to 6 left
 
 	mov r9, rax				; r9 = rax
+
+	mov rax, 1
+	mov [stack], rax		; stack = 1
 
 	call _scanf				; bl = _scanf()
 
@@ -155,6 +175,7 @@ check_3_byte:
 	and al, bl
 	mov cl, 224
 	cmp al, cl
+	mov rax, 4
 	jne _err_exit			; check if control bytes are 1110
 
 	not cl
@@ -165,6 +186,9 @@ check_3_byte:
 	mul rcx					; shitft bits to 12 left
 
 	mov r9, rax				; r9 = rax
+
+	mov rax, 2
+    mov [stack], rax		; stack = 2
 
 	call _scanf				; bl = _scanf()
 
@@ -196,6 +220,7 @@ check_4_byte:
 	and al, bl
 	mov cl, 240
 	cmp al, cl
+	mov rax, 5
 	jne _err_exit			; check if control bytes are 11110
 
 	not cl
@@ -206,6 +231,9 @@ check_4_byte:
 	mul rcx					; shitft bits to 18 left
 
 	mov r9, rax				; r9 = rax
+
+	mov rax, 3
+	mov [stack], rax		; stack = 3
 
 	call _scanf				; bl = _scanf()
 
@@ -502,7 +530,7 @@ _start:
 	cmp rax, 1
 	jae arguments_ok		; jump if rax >= 1
 
-	call _err_exit			; err if arguments are less than 1
+	jmp _err_exit			; err if arguments are less than 1
 
 arguments_ok:
 	pop rax					; remove first argument
@@ -510,6 +538,9 @@ arguments_ok:
 	mov [arg_arr], rsp		; arg_arr = rsp
 
 	call _convert_args		; convert input arguments
+
+	mov rax, 0
+	mov [stack], rax
 
 while_true:
 	call _next_utf_char		; rax = _next_utf_char()
