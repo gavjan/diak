@@ -1,75 +1,75 @@
-# Zadanie 1
+# Excercise 1
 
 # Diakrytynizator
 
-Zaimplementuj w asemblerze x86_64 program, który czyta ze standardowego wejścia tekst, modyfikuje go w niżej
-opisany sposób, a wynik wypisuje na standardowe wyjście. Do kodowania tekstu używamy UTF-8, patrz
-https://pl.wikipedia.org/wiki/UTF-8. Program nie zmienia znaków o wartościach unicode z przedziału od `0x00` do `0x7F`.
-Natomiast każdy znak o wartości unicode większej od `0x7F` przekształca na znak, którego wartość unicode wաŁyznacza się
-za pomocą niżej opisanego wielomianu.
+Implement in x86_64 assembly language a program that reads text from standard input, modifies it in the following
+described method, and write the result to the standard output. We use UTF-8 to encode the text, see
+https://pl.wikipedia.org/wiki/UTF-8. The program does not change characters with unicode values between `0x00` and `0x7F`.
+On the other hand, each character with a unicode value greater than `0x7F` transforms into a character whose unicode value is determined
+using the polynomial described below.
 
-# Wielomian diakrytynizujący
+# Diacritization polynomial
 
-Wielomian diakrytynizujący definiuje się przez parametry wywołania diakrytynizatora:
+The diacritinizing polynomial is defined by the parameters for inducing the diacritinator:
 ```sh
 ./diakrytynizator a0 a1 a2 ... an
 ```
-jako:
+as:
 ```
 w(x) = an * x^n + ... + a2 * x^2 + a1 * x + a0
 ```
 
-Współczynniki wielomianu są nieujemnymi liczbami całkowitymi podawanymi przy podstawie dziesięć. Musi wystąpić
-przynajmniej parametr `a0`.
+The coefficients of the polynomial are non-negative integers given in base ten. Must occur
+at least the `a0` parameter.
 
-Obliczanie wartości wielomianu wykonuje się modulo `0x10FF80`. W tekście znak o wartości unicode `x` zastępuje się
-znakiem o wartości unicode `w(x - 0x80) + 0x80`.
+Calculation of the polynomial value is done modulo `0x10FF80`. In the text, the unicode `x` is replaced
+character with unicode value `w (x - 0x80) + 0x80`.
 
-# Zakończenie programu i obsługa błędów
+# Program termination and error handling
 
-Program kwituje poprawne zakończenia działania, zwracając kod `0`. Po wykryciu błędu program kończy się, zwracając
-kod `1`.
+The program acknowledges correct termination of operation, returning the code `0`. When an error is detected, the program exits by returning
+code `1`.
 
-Program powinien sprawdzać poprawność parametrów wywołania i danych wejściowych. Przyjmujemy, że poprawne
-są znaki UTF-8 o wartościach unicode od `0` do `0x10FFFF`, kodowane na co najwyżej `4` bajtach i poprawny jest wyłącznie
-najkrótszy możliwy sposób zapisu.
+The program should validate call parameters and input data. We assume that it is correct
+are UTF-8 characters with unicode values from `0` to`0x10FFFF`, encoded with at most `4` bytes and is only valid
+the shortest possible write method.
 
-# Przykłady użycia
+# Usage examples
 
-Polecenie
+Input
 ```sh
 echo "Zażółć gęślą jaźń..." | ./diakrytynizator 0 1; echo $?
 ```
-wypisuje
+writes out
 ```
 Zażółć gęślą jaźń...
 0
 ```
-Polecenie
+Input
 ```sh
 echo "Zażółć gęślą jaźń..." | ./diakrytynizator 133; echo $?
 ```
-wypisuje
+writes out
 ```
 Zaąąąą gąąlą jaąąą
 0
 ```
-Polecenie
+Input
 ```sh
 echo "ŁOŚ" | ./diakrytynizator 1075041 623420 1; echo $?
 ```
 
-wypisuje
+writes out
 
 ```
 „O”
 0
 ```
-Polecenie
+Input
 ```sh
 echo -e "abc\n\x80" | ./diakrytynizator 7; echo $?
 ```
-wypisuje
+writes out
 ```
 abc
 1
